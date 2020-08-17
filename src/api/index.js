@@ -4,6 +4,8 @@ const url = "https://covid19.mathdro.id/api";
 
 const sUrl = "https://api.covidtracking.com";
 
+var newsUrl = 'http://newsapi.org/v2/everything?'
+
 export const fetchData = async (country) => {
   let changeableUrl = url;
 
@@ -128,5 +130,14 @@ export const currentStateData = async (stateCode) => {
       onVentilatorCurrently
 
     };
+  } catch (error) {}
+};
+
+export const currentStateNews = async (stateName) => {
+  try {
+    const 
+      data  = await axios.get(`${newsUrl}qInTitle=${stateName}+covid&language=en&sortBy=relevancy&apiKey=cdd0e980c7ae4905a7a7d2cdc5db6932`);
+    console.log(stateName);
+    return data;
   } catch (error) {}
 };

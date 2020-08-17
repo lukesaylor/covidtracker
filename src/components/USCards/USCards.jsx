@@ -96,12 +96,12 @@ const USCards = ({
                 <TableHead className={styles.tableHead}>
                   <TableRow>
                     <TableCell align="center">
-                      {currentStateMetadata.stateName}
+                      <h3>{currentStateMetadata.stateName}</h3>
                     </TableCell>
                     <TableCell align="center">
-                      {new Date(
+                      <h3>{new Date(
                         currentStateData.stateDateChecked
-                      ).toDateString()}
+                      ).toDateString()}</h3>
                     </TableCell>
                   </TableRow>
                 </TableHead>

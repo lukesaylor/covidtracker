@@ -7,6 +7,7 @@ import {
   USChart,
   StatePicker,
   Navbar,
+  NewsTicker
 } from "./components";
 import { HashRouter as Router, Route } from "react-router-dom";
 import styles from "./App.module.css";
@@ -26,6 +27,8 @@ class App extends React.Component {
     stateData: {},
     currentState: "",
     currentStateData: {},
+    stateNews: {},
+    currentStateMetadata: ""
   };
 
   async componentDidMount() {
@@ -92,6 +95,7 @@ class App extends React.Component {
               stateData={stateData}
               currentStateMetadata={currentStateMetadata}
             />
+            <NewsTicker currentStateMetadata={currentStateMetadata}/>
           </Route>
           <Route path="/world" strict exact>
             <h1>{country ? `${country}` : "World"}</h1>
@@ -108,3 +112,5 @@ class App extends React.Component {
 }
 
 export default App;
+
+//cdd0e980c7ae4905a7a7d2cdc5db6932 news api key

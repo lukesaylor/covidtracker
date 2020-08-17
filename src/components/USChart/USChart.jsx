@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { fetchDailyUSData } from "../../api";
 import { Bar } from "react-chartjs-2";
 import styles from "./USChart.module.css";
+import moment from 'moment';
+ 
 
 const USChart = ({ stateData, currentStateMetadata }) => {
   const [dailyUSData, setDailyUSData] = useState([]);
@@ -18,7 +20,7 @@ const USChart = ({ stateData, currentStateMetadata }) => {
   const barChartUSCases = stateData.length ? (
     <Bar
       data={{
-        labels: stateData.map(({ date }) => new Date(date).toDateString()),
+        labels: stateData.map(({ date }) => new  moment(date).calendar('MMM Do YY')),
         datasets: [
           {
             data: stateData.map(({ confirmed }) => confirmed),
@@ -39,7 +41,7 @@ const USChart = ({ stateData, currentStateMetadata }) => {
   ) : (
     <Bar
       data={{
-        labels: dailyUSData.map(({ date }) => new Date(date).toDateString()),
+        labels: dailyUSData.map(({ date }) => new moment(date).calendar('MMM Do YY')),
         datasets: [
           {
             data: dailyUSData.map(({ confirmed }) => confirmed),
@@ -58,7 +60,7 @@ const USChart = ({ stateData, currentStateMetadata }) => {
   const barChartUSDeaths = stateData.length ? (
     <Bar
       data={{
-        labels: stateData.map(({ date }) => new Date(date).toDateString()),
+        labels: stateData.map(({ date }) => new moment(date).calendar('MMM Do YY')),
         datasets: [
           {
             data: stateData.map(({ deaths }) => deaths),
@@ -79,7 +81,7 @@ const USChart = ({ stateData, currentStateMetadata }) => {
   ) : (
     <Bar
       data={{
-        labels: dailyUSData.map(({ date }) => new Date(date).toDateString()),
+        labels: dailyUSData.map(({ date }) => new moment(date).calendar('MMM Do YY')),
         datasets: [
           {
             data: dailyUSData.map(({ deaths }) => deaths),
@@ -99,7 +101,7 @@ const USChart = ({ stateData, currentStateMetadata }) => {
   const barChartUSDailyCases = stateData.length ? (
     <Bar
       data={{
-        labels: stateData.map(({ date }) => new Date(date).toDateString()),
+        labels: stateData.map(({ date }) => new moment(date).calendar('MMM Do YY')),
         datasets: [
           {
             data: stateData.map(({ dailyCases }) => dailyCases),
@@ -120,7 +122,7 @@ const USChart = ({ stateData, currentStateMetadata }) => {
   ) : (
     <Bar
       data={{
-        labels: dailyUSData.map(({ date }) => new Date(date).toDateString()),
+        labels: dailyUSData.map(({ date }) => new moment(date).calendar('MMM Do YY')),
         datasets: [
           {
             data: dailyUSData.map(({ dailyCases }) => dailyCases),
