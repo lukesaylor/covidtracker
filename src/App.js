@@ -104,7 +104,7 @@ class App extends React.Component {
               stateData={stateData}
               currentStateMetadata={currentStateMetadata}
             />
-            <NewsTicker stateNews={stateNews}/>
+             
           </Route>
           <Route path="/world" strict exact>
             <h1>{country ? `${country}` : "World"}</h1>
