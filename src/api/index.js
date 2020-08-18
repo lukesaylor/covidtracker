@@ -4,7 +4,7 @@ const url = "https://covid19.mathdro.id/api";
 
 const sUrl = "https://api.covidtracking.com";
 
-var newsUrl = "http://newsapi.org/v2/everything?";
+var newsUrl = "https://newsapi.org/v2/everything?";
 
 export const fetchData = async (country) => {
   let changeableUrl = url;
