@@ -1,0 +1,9 @@
+.newsContainer {
+    display: flex;
+    flex-direction: column;
+    width: 75% !important;
+    margin-bottom: 5vh;
+    align-items: center !important;
+}
+
+ 
