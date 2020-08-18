@@ -7,7 +7,6 @@ import {
   USChart,
   StatePicker,
   Navbar,
-  NewsTicker
 } from "./components";
 import { HashRouter as Router, Route } from "react-router-dom";
 import styles from "./App.module.css";
@@ -28,18 +27,16 @@ class App extends React.Component {
     stateData: {},
     currentState: "",
     currentStateData: {},
-    stateNews: {},
-    currentStateMetadata: ""
+
+    currentStateMetadata: "",
   };
 
   async componentDidMount() {
     const fetchedData = await fetchData();
     const fetchedUSData = await fetchUSData();
-    const usNews = await currentStateNews("USA")
 
     this.setState({ data: fetchedData });
     this.setState({ USData: fetchedUSData });
-    this.setState({stateNews: usNews})
   }
 
   handleCountryChange = async (country) => {
@@ -49,12 +46,10 @@ class App extends React.Component {
   };
   handleStateChange = async (stateMetadata) => {
     if (stateMetadata.stateCode.length === 0) {
-      const usNews = await currentStateNews("USA")
       this.setState({
         stateData: {},
         currentStateMetadata: "",
         currentStateData: {},
-        stateNews: usNews
       });
     } else {
       stateMetadata.stateCode = stateMetadata.stateCode.toLowerCase();
@@ -64,14 +59,11 @@ class App extends React.Component {
       const fetchedCurrentStateData = await currentStateData(
         stateMetadata.stateCode
       );
-      console.log(stateMetadata)
-      const fetchedStateNews = await currentStateNews(stateMetadata.stateName.replace(/ /g,"+"))
 
       this.setState({
         stateData: fetchedDailyStateData,
         currentStateMetadata: stateMetadata,
         currentStateData: fetchedCurrentStateData,
-        stateNews: fetchedStateNews
       });
     }
   };
@@ -84,7 +76,6 @@ class App extends React.Component {
       currentStateMetadata,
       stateData,
       currentStateData,
-       stateNews
     } = this.state;
     return (
       <div className={styles.container}>
@@ -104,7 +95,6 @@ class App extends React.Component {
               stateData={stateData}
               currentStateMetadata={currentStateMetadata}
             />
-             
           </Route>
           <Route path="/world" strict exact>
             <h1>{country ? `${country}` : "World"}</h1>
