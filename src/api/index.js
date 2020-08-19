@@ -12,7 +12,7 @@ export const registerFilter = (filter) => {
 };
 
 registerFilter(new NoNegativeCasesFilter());
-registerFilter(new NoOlderThanXDaysFilter({ numberOfDays: 30 }));
+registerFilter(new NoOlderThanXDaysFilter({ numberOfDays: 60 }));
 
  
 
