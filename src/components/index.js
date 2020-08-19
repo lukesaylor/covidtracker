@@ -5,4 +5,4 @@ export { default as StatePicker } from "./StatePicker/StatePicker";
 export { default as USCards } from "./USCards/USCards";
 export { default as USChart } from "./USChart/USChart";
 export { default as Navbar } from "./Navbar/Navbar";
- 
+export { default as FilterSelect } from "./FilterSelect/FilterSelect";

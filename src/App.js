@@ -7,6 +7,7 @@ import {
   USChart,
   StatePicker,
   Navbar,
+  FilterSelect,
 } from "./components";
 import { HashRouter as Router, Route } from "react-router-dom";
 import styles from "./App.module.css";
@@ -91,6 +92,7 @@ class App extends React.Component {
               currentStateData={currentStateData}
               currentStateMetadata={currentStateMetadata}
             />
+            <FilterSelect/>
             <USChart
               stateData={stateData}
               currentStateMetadata={currentStateMetadata}
