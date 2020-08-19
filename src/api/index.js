@@ -1,8 +1,18 @@
 import axios from "axios";
+import { NoNegativeCasesFilter, NoOlderThanXDaysFilter } from "./Filters";
 
 const url = "https://covid19.mathdro.id/api";
 
 const sUrl = "https://api.covidtracking.com";
+
+const dataFilters = [];
+
+export const registerFilter = (filter) => {
+  dataFilters.push(filter);
+};
+
+registerFilter(new NoNegativeCasesFilter());
+registerFilter(new NoOlderThanXDaysFilter({ numberOfDays: 30 }));
 
  
 
@@ -71,7 +81,12 @@ export const fetchDailyUSData = async () => {
       recovered: dailyUSData.recovered,
       dailyCases: dailyUSData.positiveIncrease,
     }));
-    const modifiedData = reverseData.reverse();
+     
+    let modifiedData = reverseData.reverse();
+
+    for (const filter of dataFilters) {
+      modifiedData = filter.applyFilter(modifiedData);
+    }
     return modifiedData;
   } catch (error) {}
 };
@@ -93,7 +108,12 @@ export const fetchDailyStateData = async (stateCode) => {
       stateDataCache[stateCode] = reverseData.reverse();
     }
 
-    return stateDataCache[stateCode];
+    let filteredData = stateDataCache[stateCode];
+
+    for (const filter of dataFilters) {
+      filteredData = filter.applyFilter(filteredData);
+    }
+    return filteredData;
   } catch (error) {}
 };
 
