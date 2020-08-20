@@ -17,27 +17,38 @@ import {
   fetchDailyStateData,
   currentStateData,
   currentStateNews,
+  fetchDailyUSData
+
 } from "./api";
 import { Typography } from "@material-ui/core";
+import { NoOlderThanXDaysFilter } from "./api/Filters";
 
 class App extends React.Component {
   state = {
     data: {},
     country: "",
     USData: {},
-    stateData: {},
+    USDailyData: [],
+    stateData: [],
     currentState: "",
     currentStateData: {},
 
-    currentStateMetadata: "",
+    currentStateMetadata: { stateName: "USA" },
+
+    numberOfDaysFilter: new NoOlderThanXDaysFilter({ numberOfDays: 60 }) ,
   };
 
   async componentDidMount() {
-    const fetchedData = await fetchData();
-    const fetchedUSData = await fetchUSData();
+    const fetchedData = fetchData();
+    const fetchedUSData = fetchUSData();
+    const usDailyData = fetchDailyUSData();
 
-    this.setState({ data: fetchedData });
-    this.setState({ USData: fetchedUSData });
+    this.setState({ data: await fetchedData, USData: await fetchedUSData, USDailyData: await usDailyData });
+  }
+
+  handleFilterChange = (dataAge) => {
+    dataAge = Number.parseInt(dataAge);
+    this.setState({ numberOfDaysFilter: new NoOlderThanXDaysFilter({ numberOfDays: dataAge }) })
   }
 
   handleCountryChange = async (country) => {
@@ -45,56 +56,80 @@ class App extends React.Component {
 
     this.setState({ data: fetchedData, country: country });
   };
+
   handleStateChange = async (stateMetadata) => {
     if (stateMetadata.stateCode.length === 0) {
       this.setState({
         stateData: {},
-        currentStateMetadata: "",
+        currentStateMetadata: { stateName: "USA" },
         currentStateData: {},
       });
     } else {
       stateMetadata.stateCode = stateMetadata.stateCode.toLowerCase();
-      const fetchedDailyStateData = await fetchDailyStateData(
+      
+      const fetchedDailyStateData = fetchDailyStateData(
         stateMetadata.stateCode
       );
-      const fetchedCurrentStateData = await currentStateData(
+      const fetchedCurrentStateData = currentStateData(
         stateMetadata.stateCode
       );
 
+      debugger;
+
       this.setState({
-        stateData: fetchedDailyStateData,
+        stateData: await fetchedDailyStateData,
         currentStateMetadata: stateMetadata,
-        currentStateData: fetchedCurrentStateData,
+        currentStateData: await fetchedCurrentStateData,
       });
     }
   };
 
   render() {
-    const {
+    let {
       data,
       country,
       USData,
+      USDailyData,
       currentStateMetadata,
       stateData,
       currentStateData,
+      numberOfDaysFilter
     } = this.state;
+
+    let selectedData = stateData.length > 0 ? stateData : USDailyData;
+    if (numberOfDaysFilter && selectedData.length > 0) {
+      selectedData = numberOfDaysFilter.applyFilter(selectedData);
+    }
+
+    const cardDataSource = currentStateMetadata.stateName === "USA" ? USData : currentStateData;
+
+    let cardData = {
+        positive: cardDataSource.positive,
+        recovered: cardDataSource.recovered,
+        death: cardDataSource.death,
+        dateChecked: cardDataSource.dateChecked,
+        negative: cardDataSource.negative,
+        hospitalizedCurrently: cardDataSource.hospitalizedCurrently, 
+        inIcuCurrently: cardDataSource.inIcuCurrently, 
+        onVentilatorCurrently: cardDataSource.inIcuCurrently 
+      };
+
     return (
       <div className={styles.container}>
         <Router>
           <Navbar USData={USData} />
           <Route path="/" strict exact>
             <h1>
-              {currentStateMetadata ? currentStateMetadata.stateName : "USA"}
+              {currentStateMetadata.stateName}
             </h1>
             <StatePicker handleStateChange={this.handleStateChange} />
             <USCards
-              USData={USData}
-              currentStateData={currentStateData}
+              cardData={cardData}
               currentStateMetadata={currentStateMetadata}
             />
-            <FilterSelect/>
+            <FilterSelect handleFilterChange={this.handleFilterChange} />
             <USChart
-              stateData={stateData}
+              data={selectedData}
               currentStateMetadata={currentStateMetadata}
             />
           </Route>

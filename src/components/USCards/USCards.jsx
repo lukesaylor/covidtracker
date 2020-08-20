@@ -12,14 +12,13 @@ import CountUp from "react-countup";
 import cx from "classnames";
 
 const USCards = ({
-  USData: { positive, death, recovered, dateChecked },
+  cardData: { positive, death, recovered, dateChecked, negative, hospitalizedCurrently, inIcuCurrently, onVentilatorCurrently },
   currentStateMetadata,
-  currentStateData,
 }) => {
-  console.log(currentStateData);
   if (!positive) {
     return "Loading Data...";
   }
+
   return (
     <div className={styles.container}>
       <Grid container spacing={3} justify="center">
@@ -32,10 +31,10 @@ const USCards = ({
         >
           <CardContent>
             <Typography color="textSecondary" gutterBottom>
-              {currentStateMetadata ? (`${currentStateMetadata.stateName} Infected`):("USA Infected")}
+              {`${currentStateMetadata.stateName} Infected`}
             </Typography>
             <Typography variant="h5">
-              <CountUp start={0} end={currentStateMetadata ?(currentStateData.statePositive):(positive)} duration={2.5} separator="," />
+              <CountUp start={0} end={positive} duration={2.5} separator="," />
             </Typography>
             <Typography color="textSecondary">
               {new Date(dateChecked).toDateString()}
@@ -54,10 +53,10 @@ const USCards = ({
         >
           <CardContent>
             <Typography color="textSecondary" gutterBottom>
-            {currentStateMetadata ? (`${currentStateMetadata.stateName} Recovered`):("USA Recovered")}
+            {`${currentStateMetadata.stateName} Recovered`}
             </Typography>
             <Typography variant="h5">
-              <CountUp start={0} end={currentStateMetadata ?(currentStateData.stateRecovered):(recovered)} duration={2.5} separator="," />
+              <CountUp start={0} end={recovered} duration={2.5} separator="," />
             </Typography>
             <Typography color="textSecondary">
               {new Date(dateChecked).toDateString()}
@@ -67,19 +66,13 @@ const USCards = ({
             </Typography>
           </CardContent>
         </Grid>
-        <Grid
-          item
-          component={Card}
-          xs={10}
-          md={3}
-          className={cx(styles.card, styles.deaths)}
-        >
+        <Grid item component={Card} xs={10} md={3} className={cx(styles.card, styles.deaths)}>
           <CardContent>
             <Typography color="textSecondary" gutterBottom>
-            {currentStateMetadata ? (`${currentStateMetadata.stateName} Deaths`):("USA Deaths")}
+            {`${currentStateMetadata.stateName} Deaths`}
             </Typography>
             <Typography variant="h5">
-              <CountUp start={0} end={currentStateMetadata ?(currentStateData.stateDeath):(death)} duration={2.5} separator="," />
+              <CountUp start={0} end={death} duration={2.5} separator="," />
             </Typography>
             <Typography color="textSecondary">
               {new Date(dateChecked).toDateString()}
@@ -89,7 +82,7 @@ const USCards = ({
             </Typography>
           </CardContent>
         </Grid>
-        {currentStateMetadata ? (
+        {currentStateMetadata.stateName !== "USA" ? (
           <>
             <TableContainer className={styles.stateTable} component={Paper}>
               <Table aria-label="simple table">
@@ -99,9 +92,7 @@ const USCards = ({
                       <h3>{currentStateMetadata.stateName}</h3>
                     </TableCell>
                     <TableCell align="center">
-                      <h3>{new Date(
-                        currentStateData.stateDateChecked
-                      ).toDateString()}</h3>
+                      <h3>{new Date(dateChecked).toDateString()}</h3>
                     </TableCell>
                   </TableRow>
                 </TableHead>
@@ -109,56 +100,56 @@ const USCards = ({
                   <TableRow>
                     <TableCell align="center">Infected</TableCell>
                     <TableCell align="center">
-                      {currentStateData.statePositive}
+                      {positive}
                     </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell align="center">Deaths</TableCell>
                     <TableCell align="center">
-                      {currentStateData.stateDeath}
+                      {death}
                     </TableCell>
                   </TableRow>
-                  {currentStateData.stateRecovered ? (
+                  {recovered ? (
                     <TableRow>
                       <TableCell align="center">Recovered</TableCell>
                       <TableCell align="center">
-                        {currentStateData.stateRecovered}
+                        {recovered}
                       </TableCell>
                     </TableRow>
                   ) : null}
-                  {currentStateData.negative ? (
+                  {negative ? (
                     <TableRow>
                       <TableCell align="center">Negative Tests</TableCell>
                       <TableCell align="center">
-                        {currentStateData.negative}
+                        {negative}
                       </TableCell>
                     </TableRow>
                   ) : null}
-                  {currentStateData.hospitalizedCurrently ? (
+                  {hospitalizedCurrently ? (
                     <TableRow>
                       <TableCell align="center">
                         Currently Hospitalized
                       </TableCell>
                       <TableCell align="center">
-                        {currentStateData.hospitalizedCurrently}
+                        {hospitalizedCurrently}
                       </TableCell>
                     </TableRow>
                   ) : null}
-                  {currentStateData.inIcuCurrently ? (
+                  {inIcuCurrently ? (
                     <TableRow>
                       <TableCell align="center">Currently in ICU</TableCell>
                       <TableCell align="center">
-                        {currentStateData.inIcuCurrently}
+                        {inIcuCurrently}
                       </TableCell>
                     </TableRow>
                   ) : null}
-                  {currentStateData.onVentilatorCurrently ? (
+                  {onVentilatorCurrently ? (
                     <TableRow>
                       <TableCell align="center">
                         Currently on Ventilator
                       </TableCell>
                       <TableCell align="center">
-                        {currentStateData.onVentilatorCurrently}
+                        {onVentilatorCurrently}
                       </TableCell>
                     </TableRow>
                   ) : null}

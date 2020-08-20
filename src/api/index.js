@@ -7,14 +7,18 @@ const sUrl = "https://api.covidtracking.com";
 
 const dataFilters = [];
 
+console.log(dataFilters)
+
 export const registerFilter = (filter) => {
   dataFilters.push(filter);
 };
 
-registerFilter(new NoNegativeCasesFilter());
-registerFilter(new NoOlderThanXDaysFilter({ numberOfDays: 60 }));
+export const removeFilter = () => {
+  dataFilters.pop()
+};
 
- 
+registerFilter(new NoNegativeCasesFilter());
+registerFilter(new NoOlderThanXDaysFilter({ numberOfDays: 180 }));
 
 export const fetchData = async (country) => {
   let changeableUrl = url;
@@ -24,10 +28,8 @@ export const fetchData = async (country) => {
   }
 
   try {
-    const {
-      data: { confirmed, recovered, deaths, lastUpdate },
-    } = await axios.get(changeableUrl);
-    return { confirmed, recovered, deaths, lastUpdate };
+    const results = await axios.get(changeableUrl);
+    return results.data;
   } catch (error) {
     console.log(error);
   }
@@ -37,12 +39,11 @@ export const fetchDailyData = async () => {
   try {
     const { data } = await axios.get(`${url}/daily`);
 
-    const modifiedData = data.map((dailyData) => ({
+    return data.map((dailyData) => ({
       confirmed: dailyData.confirmed.total,
       deaths: dailyData.deaths.total,
       date: dailyData.reportDate,
     }));
-    return modifiedData;
   } catch (error) {
     console.log(error);
   }
@@ -64,15 +65,16 @@ export const fetchUSData = async () => {
   try {
     const initialUSData = await axios.get(`${sUrl}/v1/us/current.json`);
 
-    const USData = initialUSData.data[0];
-
-    return USData;
+    return initialUSData.data[0];
   } catch (error) {}
 };
 
+let dailyDataCache = null;
 export const fetchDailyUSData = async () => {
   try {
+    if (!dailyDataCache) {
     const { data } = await axios.get(`${sUrl}/v1/us/daily.json`);
+    
 
     const reverseData = data.map((dailyUSData) => ({
       confirmed: dailyUSData.positive,
@@ -81,13 +83,15 @@ export const fetchDailyUSData = async () => {
       recovered: dailyUSData.recovered,
       dailyCases: dailyUSData.positiveIncrease,
     }));
-     
-    let modifiedData = reverseData.reverse();
+
+    dailyDataCache = reverseData.reverse();
 
     for (const filter of dataFilters) {
-      modifiedData = filter.applyFilter(modifiedData);
+      dailyDataCache = filter.applyFilter(dailyDataCache);
     }
-    return modifiedData;
+  }
+
+    return dailyDataCache;
   } catch (error) {}
 };
 
@@ -135,29 +139,8 @@ export const fetchStates = async () => {
 
 export const currentStateData = async (stateCode) => {
   try {
-    const {
-      data: {
-        positive,
-        recovered,
-        death,
-        dateChecked,
-        negative,
-        hospitalizedCurrently,
-        inIcuCurrently,
-        onVentilatorCurrently,
-      },
-    } = await axios.get(`${sUrl}/v1/states/${stateCode}/current.json`);
-
-    return {
-      statePositive: positive,
-      stateRecovered: recovered,
-      stateDeath: death,
-      stateDateChecked: dateChecked,
-      negative,
-      hospitalizedCurrently,
-      inIcuCurrently,
-      onVentilatorCurrently,
-    };
+    var results = await axios.get(`${sUrl}/v1/states/${stateCode}/current.json`);
+    return results.data;
   } catch (error) {}
 };
 
