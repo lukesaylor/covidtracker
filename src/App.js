@@ -101,18 +101,9 @@ class App extends React.Component {
       selectedData = numberOfDaysFilter.applyFilter(selectedData);
     }
 
-    const cardDataSource = currentStateMetadata.stateName === "USA" ? USData : currentStateData;
+    const cardData = currentStateMetadata.stateName === "USA" ? USData : currentStateData;
 
-    let cardData = {
-        positive: cardDataSource.positive,
-        recovered: cardDataSource.recovered,
-        death: cardDataSource.death,
-        dateChecked: cardDataSource.dateChecked,
-        negative: cardDataSource.negative,
-        hospitalizedCurrently: cardDataSource.hospitalizedCurrently, 
-        inIcuCurrently: cardDataSource.inIcuCurrently, 
-        onVentilatorCurrently: cardDataSource.inIcuCurrently 
-      };
+     
 
     return (
       <div className={styles.container}>

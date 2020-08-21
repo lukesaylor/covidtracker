@@ -5,7 +5,7 @@ import TextField from "@material-ui/core/TextField";
 const FilterSelect = ({handleFilterChange}) => {
   return (
     <div className={styles.FilterBox}>
-      <p>Data Age:</p>
+      
 
       <div className={styles.FilterInput}>
         <TextField onBlur={(e) => handleFilterChange(e.target.value)} height="75%" id="outlined-basic" type="number" label="Number of Days" variant="outlined" />
